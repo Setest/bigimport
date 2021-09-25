@@ -1,0 +1,33 @@
+services:
+  _defaults:
+    autowire: true      # Automatically injects dependencies in your services.
+    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{DependencyInjection,Entity,Tests,Kernel.php}'
+
+  db.helper:
+    class:  App\Helper\DbHelper
+
+  category.model:
+    class:  App\Model\CategoryModel
+    arguments: ['@db.helper']
+
+  product.model:
+    class:  App\Model\ProductModel
+    arguments: ['@db.helper']
+
+  category.service:
+    class:  App\Service\CategoryService
+    arguments: ['@category.model']
+
+  product.service:
+    class:  App\Service\ProductService
+    arguments: ['@product.model']
+
+  importer.service:
+    class:  App\Service\ImporterService
+    arguments:
+        $category: '@category.service'
+        $product: '@product.service'

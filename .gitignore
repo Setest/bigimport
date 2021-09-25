@@ -1,0 +1,7 @@
+.env
+/vendor
+/docker/data
+/docker/logs
+.idea
+/trash
+/old

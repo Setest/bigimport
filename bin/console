@@ -1,0 +1,55 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use Dotenv\Dotenv;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Console\Application;
+//use Symfony\Component\DependencyInjection\Reference;
+
+
+
+// init service container
+//$containerBuilder = new ContainerBuilder();
+//$containerBuilder->register('demo.service', 'App\Service\DemoService');
+//$containerBuilder->register('dependent.service', 'App\Service\DependentService')
+//  ->addArgument(new Reference('demo.service'))
+//  ->addMethodCall('setMailer', [new Reference('demo.service')]);
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
+// init service container
+$containerBuilder = new ContainerBuilder();
+//$containerBuilder->setParameter('xxx','zzzz');
+// init yaml file loader
+$loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__));
+
+// load services from the yaml file
+$loader->load('../services.yaml');
+// Create the Application
+$application = new Application;
+
+//$application->($container, $injectWithTypeHint = true);
+
+// same as before
+//$application->load('App\\', '../src/*')
+//  ->exclude('../src/{DependencyInjection,Entity,Tests,Kernel.php}');
+
+// Register all Commands
+$application->add(new App\Command\ImportCommand($containerBuilder, dirname(__DIR__)));
+//$application->add(new App\Command\TestCommand());
+//$application->add(new Symfony\Bundle\MakerBundle\Maker\);
+//$collection->addBundle(new \Symfony\Bundle\MakerBundle\MakerBundle(), 0, ['dev']);
+
+//foreach ($containerBuilder->getDefinitions() as $definition){
+//$application->addCommands($containerBuilder->getDefinitions());
+//}
+
+//$application->add(new \Symfony\Bundle\MakerBundle\Command\MakerCommand(), 0, ['dev']);
+
+// Run it
+$application->run();

@@ -1,0 +1,26 @@
+{
+    "name": "setest/big-import2",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Setest",
+            "email": "itman116@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "^5.3",
+        "vlucas/phpdotenv": "^5.3",
+        "nette/database": "^3.1",
+        "symfony/dependency-injection": "^5.3",
+        "symfony/yaml": "^5.3",
+        "symfony/config": "^5.3",
+        "maxakawizard/json-collection-parser": "^1.8"
+    },
+    "require-dev": {
+        "symfony/maker-bundle": "^1.33"
+    }
+}

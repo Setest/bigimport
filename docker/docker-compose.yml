@@ -1,0 +1,50 @@
+version: '3.7'
+
+services:
+
+  bigimport_db:
+    container_name: bigimport_db
+    image: postgres:12.1
+    restart: always
+    ports:
+      - 5437:5432
+    env_file:
+        - ../.env
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./postgres/1-init-db.sh:/docker-entrypoint-initdb.d/1-init-db.sh
+      - ./postgres/2-init-schema.sh:/docker-entrypoint-initdb.d/2-init-schema.sh
+    networks:
+      - bigimport-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  bigimport_php:
+    build: ./php
+    container_name: bigimport_php
+    env_file:
+        - ../.env
+#    ports:
+#      - 9001:9000
+    volumes:
+      - ./..:/var/www
+      - ./logs/xdebug/:/var/log/xdebug
+    links:
+      - bigimport_db:bigimport_db
+    environment:
+      - PHP_EXTENSION_XDEBUG=1
+      - PHP_INI_XDEBUG__REMOTE_PORT=9000
+      - XDEBUG_CONFIG=remote_port=9000 remote_autostart=1
+      - PHP_IDE_CONFIG=serverName=bigimport
+    networks:
+      - bigimport-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  pgconf:
+    driver: local
+
+networks:
+  bigimport-network:
+    driver: bridge
